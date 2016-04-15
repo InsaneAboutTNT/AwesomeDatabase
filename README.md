@@ -14,7 +14,7 @@ dataSource.setDatabaseName("MyDB");
 AwesomeDatabase awesomeDB = new AwesomeDatabase(dataSource);
 try {
     // With a DataSource, the awesomeDatabase will automatically handle connections
-	List<Item> results = awesomeDB.createQuery("CREATE TABLE awesometable")
+	awesomeDB.createQuery("CREATE TABLE awesometable")
 			.executeUpdate();
 } catch (SQLException e) {
 	e.printStackTrace();
