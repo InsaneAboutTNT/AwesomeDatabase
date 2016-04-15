@@ -94,6 +94,51 @@ public class Query {
 		return setParam(index, Double.toString(value));
 	}
 	/**
+	 * @param index The index in the statement
+	 * @param value The value to put
+	 * @return Query object itself
+	 * @throws SQLException
+	 */
+	public Query setParam(int index, int value) throws SQLException {
+		return setParam(index, Integer.toString(value));
+	} // TODO add more
+
+	/**
+	 * Set a parameter in the PreparedStatement
+	 * @param index The index in the statement
+	 * @param value The value to put
+	 * @return Query object itself
+	 * @throws SQLException 
+	 */
+	public Query setParam(int index, long value) throws SQLException {
+		return setParam(index, Long.toString(value));
+	}
+	
+	/**
+	 * Set a parameter in the PreparedStatement
+	 * @param index The index in the statement
+	 * @param value The value to put
+	 * @return Query object itself
+	 * @throws SQLException 
+	 */
+	public Query setParam(int index, float value) throws SQLException {
+		return setParam(index, Float.toString(value));
+	}
+	
+	/**
+	 * Set a parameter in the PreparedStatement
+	 * @param index The index in the statement
+	 * @param value The value to put
+	 * @return Query object itself
+	 * @throws SQLException 
+	 */
+	public Query setParam(int index, boolean value) throws SQLException {
+		return setParam(index, Boolean.toString(value));
+	}
+	/*
+	 * End of setParam methods
+	 * */
+	/**
 	 * Set parameters on the Query
 	 * @param values The values to use as parameters
 	 * @return Query itself
@@ -120,15 +165,6 @@ public class Query {
 		}
 		return this;
 	}
-	/**
-	 * @param index The index in the statement
-	 * @param value The value to put
-	 * @return Query object itself
-	 * @throws SQLException
-	 */
-	public Query setParam(int index, int value) throws SQLException {
-		return setParam(index, Integer.toString(value));
-	} // TODO add more
 	/*
 	 * Close the Query
 	 * Maybe not needed
