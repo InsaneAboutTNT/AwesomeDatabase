@@ -23,12 +23,14 @@ import java.sql.SQLFeatureNotSupportedException;
  */
 public class Query {
 	private PreparedStatement statement;
+	private Connection dbConnection;
 	/**
 	 * Construct a query
 	 * @throws SQLException 
 	 */
 	public Query(Connection dbConnection, String query) throws SQLException {
 		statement = dbConnection.prepareStatement(query);
+		this.dbConnection = dbConnection;
 	}
 	/**
 	 * Perform update with SQL script
@@ -41,6 +43,7 @@ public class Query {
 			throw new SQLException("Query statement didn't execute successfully");
 		} finally {
 			if (statement != null) statement.close();
+			if (dbConnection != null) dbConnection.close();
 		}
 	}
 	/**
@@ -61,6 +64,7 @@ public class Query {
 			throw new SQLException("Query statement didn't execute successfully");
 		} finally {
 			if (statement != null) statement.close();
+			if (dbConnection != null) dbConnection.close();
 		}
 		return result;
 	}
