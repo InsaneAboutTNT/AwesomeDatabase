@@ -165,17 +165,4 @@ public class Query {
 		}
 		return this;
 	}
-	/*
-	 * Close the Query
-	 * Maybe not needed
-	 */
-	public void close() {
-		if (statement != null) {
-			try {
-				statement.close();
-			} catch (SQLException e) {
-				System.out.println("Didn't close statement successfully");
-			}
-		}
-	}
 }
