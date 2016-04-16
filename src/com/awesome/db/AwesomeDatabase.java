@@ -32,7 +32,7 @@ public class AwesomeDatabase {
 	}
 	/**
 	 * Constructor which accepts a data source
-	 * @param dataSource A <DataSource>.
+	 * @param dataSource A {@link DataSource}.
 	 */
 	public AwesomeDatabase(DataSource dataSource) {
 		this.dataSource = dataSource;
