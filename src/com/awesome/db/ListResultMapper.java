@@ -9,16 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Toshiba
+ * @author InsaneAboutTNT
  *
  */
 public abstract class ListResultMapper<RowType> implements ResultMapper<List<RowType>> {
 
 	/**
-	 * 
+	 * The constructor
 	 */
 	public ListResultMapper() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override
