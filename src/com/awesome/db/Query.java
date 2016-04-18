@@ -28,9 +28,13 @@ public class Query {
 	 * Construct a query
 	 * @throws SQLException 
 	 */
-	public Query(Connection dbConnection, String query) throws SQLException {
-		statement = dbConnection.prepareStatement(query);
-		this.dbConnection = dbConnection;
+	public Query(Connection dbConnection, String query) {
+		try {
+			statement = dbConnection.prepareStatement(query);
+			this.dbConnection = dbConnection;
+		} catch (SQLException e) {
+			throw new PrepareStatementException(query);
+		}
 	}
 	/**
 	 * Perform update with SQL script
@@ -38,12 +42,17 @@ public class Query {
 	 */
 	public void executeUpdate() throws SQLException {
 		try {
+			dbConnection.setAutoCommit(false);
 			statement.executeUpdate();
+			dbConnection.commit();
 		} catch (SQLException e) {
-			throw new SQLException("Query statement didn't execute successfully");
+			throw new QueryExecutionException("Query statement didn't execute successfully", e);
 		} finally {
 			if (statement != null) statement.close();
-			if (dbConnection != null) dbConnection.close();
+			if (dbConnection != null) {
+				dbConnection.rollback(); // Roll it back
+				dbConnection.close();
+			}
 		}
 	}
 	/**
@@ -60,8 +69,7 @@ public class Query {
 			ResultSet resultSet = statement.executeQuery();
 			result = mapper.map(resultSet);
 		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new SQLException("Query statement didn't execute successfully");
+			throw new QueryExecutionException("Query statement didn't execute successfully", e);
 		} finally {
 			if (statement != null) statement.close();
 			if (dbConnection != null) dbConnection.close();
@@ -78,9 +86,18 @@ public class Query {
 	 * @param value The value to put
 	 * @return Query object itself
 	 */
-	public Query setParam(int index, String value) throws SQLException {
+	public Query setParam(int index, String value) {
 		
-		statement.setString(index, value);
+		try {
+			statement.setString(index, value);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return this;
+	}
+	public Query setParam(int index, Object value) {
+		setParam(index, value);
 		return this;
 	}
 	/**
@@ -88,18 +105,16 @@ public class Query {
 	 * @param index The index in the statement
 	 * @param value The value to put
 	 * @return Query object itself
-	 * @throws SQLException 
 	 */
-	public Query setParam(int index, double value) throws SQLException {
+	public Query setParam(int index, double value) {
 		return setParam(index, Double.toString(value));
 	}
 	/**
 	 * @param index The index in the statement
 	 * @param value The value to put
 	 * @return Query object itself
-	 * @throws SQLException
 	 */
-	public Query setParam(int index, int value) throws SQLException {
+	public Query setParam(int index, int value) {
 		return setParam(index, Integer.toString(value));
 	} // TODO add more
 
@@ -108,9 +123,8 @@ public class Query {
 	 * @param index The index in the statement
 	 * @param value The value to put
 	 * @return Query object itself
-	 * @throws SQLException 
 	 */
-	public Query setParam(int index, long value) throws SQLException {
+	public Query setParam(int index, long value) {
 		return setParam(index, Long.toString(value));
 	}
 	
@@ -119,9 +133,8 @@ public class Query {
 	 * @param index The index in the statement
 	 * @param value The value to put
 	 * @return Query object itself
-	 * @throws SQLException 
 	 */
-	public Query setParam(int index, float value) throws SQLException {
+	public Query setParam(int index, float value) {
 		return setParam(index, Float.toString(value));
 	}
 	
@@ -130,9 +143,8 @@ public class Query {
 	 * @param index The index in the statement
 	 * @param value The value to put
 	 * @return Query object itself
-	 * @throws SQLException 
 	 */
-	public Query setParam(int index, boolean value) throws SQLException {
+	public Query setParam(int index, boolean value) {
 		return setParam(index, Boolean.toString(value));
 	}
 	/*
@@ -144,7 +156,7 @@ public class Query {
 	 * @return Query itself
 	 * @throws SQLException
 	 */
-	public Query params(Object... values) throws SQLException {
+	public Query params(Object... values) {
 		ParameterMetaData meta = null;
 		// See if we can actually get the
 		// number of required params
@@ -154,14 +166,16 @@ public class Query {
 				int paramsCount = values == null ? 0 : values.length;
 		        
                 if (meta.getParameterCount() != paramsCount) {
-                    throw new SQLException("Wrong number of params given :-(");
+                    throw new IncorrectNumberOfParamsException
+                    		(paramsCount, meta.getParameterCount());
                 }
 			}
 		} catch (SQLFeatureNotSupportedException e) {}
+		catch (SQLException e) {}
 
 		for (int i = 0; i < values.length; i++) {
 			// Query parameters are indexed like 1, 2, 3..
-			statement.setObject(i + 1, values[i]);
+			this.setParam(i+1, values[i]);
 		}
 		return this;
 	}

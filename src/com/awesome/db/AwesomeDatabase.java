@@ -51,8 +51,12 @@ public class AwesomeDatabase {
 	 * @param queryString the query string to make
 	 * @return the Query
 	 */
-	public Query createQuery(String queryString) throws SQLException {
-		return new Query(dataSource.getConnection(), queryString);
+	public Query createQuery(String queryString) {
+		try {
+			return createQuery(dataSource.getConnection(), queryString);
+		} catch (SQLException e) {
+			throw new DataSourceGetConnectionException(queryString);
+		}
 	}
 	/**
 	 * Initialise the driver. This only
