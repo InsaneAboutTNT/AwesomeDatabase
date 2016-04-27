@@ -51,7 +51,6 @@ public class Query {
 	public void executeUpdate() {
 		try (PreparedStatement statement = createPreparedStatement()){
 			statement.executeUpdate();
-			dbConnection.commit();
 		} catch (SQLException e) {
 			throw new QueryExecutionException("Query statement didn't execute successfully", e);
 		} finally {

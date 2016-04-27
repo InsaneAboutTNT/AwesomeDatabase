@@ -15,13 +15,13 @@ public class PrepareStatementException extends RuntimeException {
 	 * @param query
 	 */
 	public PrepareStatementException(String query) {
-		super("Prepar statment creation fail, qeury: " + query);
+		super("Prepared statement creation failed, query: " + query);
 	}
 	/**
 	 * Create a prepared statement exception.
 	 * @param query
 	 */
 	public PrepareStatementException(String query, Throwable e) {
-		super("Prepar statment creation fail, qeury: " + query, e);
+		super("Prepared statement creation failed, query: " + query, e);
 	}
 }
